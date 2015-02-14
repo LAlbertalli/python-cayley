@@ -18,6 +18,10 @@ object.name").Out("http://rdf.freebase.com/ns/common.topic.alias").All()':
 }, {"id": "\\"Percy Thrillington\\"@en"}, {"id": "\\"Solo career of Paul McCartney\\"@en"}, {"id":\
 "\\"Percy \\\\\\"Thrills\\\\\\" Thrillington\\"@en"}, {"id": "\\"Thrillington, Percy \'Thrills\'\\"@en"\
 }]}',
+        'g.Vertex("\\"Paul McCartney\\"@en").In("http://rdf.freebase.com/ns/type.object.name")\
+.Tag("free_id").All()':
+            '{"result": [{"free_id": "http://rdf.freebase.com/ns/m.03j24kf","id":\
+"http://rdf.freebase.com/ns/m.03j24kf"}]}',
     }
 
     def responses_callback(self, request):
@@ -73,3 +77,13 @@ object.name").Out("http://rdf.freebase.com/ns/common.topic.alias").All()':
             ]
         for pos,res in enumerate(data):
             self.assertEqual(x[pos].id,res)
+
+    @responses.activate
+    def test_tag_query_str(self):
+        responses.add_callback(responses.POST,"http://localhost:64210/api/v1/query/gremlin",
+            callback = self.responses_callback)
+        x = g.V('"Paul McCartney"@en').In("http://rdf.freebase.com/ns/type.object.name").\
+            Tag("free_id").All()
+        self.assertEqual(x[0].id, 'http://rdf.freebase.com/ns/m.03j24kf')
+        self.assertEqual(x[0].free_id, 'http://rdf.freebase.com/ns/m.03j24kf')
+        self.assertEqual(len(x), 1)
