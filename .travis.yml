@@ -6,7 +6,8 @@ python:
   - "3.3"
 
 install:
-  - "pip install responses, requests"
+  - "pip install requests"
+  - "pip install responses"
   - "./setup.py develop"
 
 script: pytest
