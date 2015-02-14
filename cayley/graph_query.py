@@ -1,17 +1,21 @@
+from __future__ import absolute_import
 from .settings import settings
 import requests, re
 from collections import namedtuple, Iterable, Callable
+import six
+from six.moves import filter
+from six.moves import map
 
 def _render_param(data):
     if data is None:
         return ''
-    elif isinstance(data,basestring):
+    elif isinstance(data,six.string_types):
         # return '"%s"'%re.sub(r'(\\?)"',r'\1\1\"',data)
         return '"%s"'%re.sub(r'(\\?)"',r'\"',data)
         # return '"%s"'%re.sub(r'"',r'\"',data)
     elif isinstance(data,GremlinQuery):
         return data._make_query()
-    elif isinstance(data,(int,long)):
+    elif isinstance(data,six.integer_types):
         return '%d'%data
     elif isinstance(data,Iterable):
         return '[%s]'%(', '.join(_render_param(i) for i in data))
@@ -21,7 +25,7 @@ def _render_param(data):
 def _extract_param(data):
     if data is None:
         return []
-    elif isinstance(data,basestring):
+    elif isinstance(data,six.string_types):
         return [data]
     elif isinstance(data,Iterable):
         return list(data)
@@ -86,9 +90,7 @@ class GremlinQueryMeta(type):
 
         cls._GremlinQuery__terminal = cls._meta.get('terminal',False)
 
-class GremlinQuery(object):
-    __metaclass__ = GremlinQueryMeta
-
+class GremlinQuery(six.with_metaclass(GremlinQueryMeta, object)):
     def __init__(self, predecessor, *args):
         if self.__abstract:
             raise NotImplementedError("Cannot instatiate a GremlinQuery class. Only subclasses could be instatiated")
@@ -111,7 +113,7 @@ class GremlinQuery(object):
             self.tags = []
         require_morphism = self._meta.require_morphism
         if require_morphism is not None:
-            if isinstance(require_morphism,(int,long)):
+            if isinstance(require_morphism,six.integer_types):
                 require_morphism = [require_morphism]
             for i in require_morphism:
                 self.tags += args[i]._make_tags()
@@ -137,7 +139,7 @@ class GremlinQuery(object):
 
         require_morphism = self._meta.require_morphism
         if require_morphism is not None:
-            if isinstance(require_morphism,(int,long)):
+            if isinstance(require_morphism,six.integer_types):
                 require_morphism = [require_morphism]
             for i in require_morphism:
                 try:
@@ -197,7 +199,7 @@ class GremlinQuery(object):
         if result is None:
             return []
         cbs = [i for i in pyop if isinstance(i,Callable)]
-        opts = set(i for i in pyop if isinstance(i,basestring))
+        opts = set(i for i in pyop if isinstance(i,six.string_types))
         distinct = set if 'distinct' in opts else list
 
         ret = distinct(CayleyResult(**i) for i in result)
@@ -295,7 +297,7 @@ class Has(GremlinQuery):
     class Meta:
         min_args = 2
         max_args = 2
-        args_val = ((0,basestring),(1,basestring))
+        args_val = ((0,six.string_types),(1,six.string_types))
 
 # Tagging
 class Tag(GremlinQuery):
@@ -304,7 +306,7 @@ class Tag(GremlinQuery):
         tag = 0
         min_args = 1
         max_args = 1
-        args_val = (0,(Iterable,basestring))
+        args_val = (0,(Iterable,six.string_types))
         alias = ["As"]
 
 class Save(GremlinQuery):
@@ -312,7 +314,7 @@ class Save(GremlinQuery):
     class Meta:
         min_args = 2
         max_args = 2
-        args_val = ((0,basestring),(1,basestring))
+        args_val = ((0,six.string_types),(1,six.string_types))
         tag = 1
 
 class Back(GremlinQuery):
@@ -377,9 +379,9 @@ class Distinct(PythonQuery):
 class Filter(PythonQuery):
     def __init__(self,predecessor,f):
         super(Filter,self).__init__(predecessor)
-        self._pyop = [lambda x:filter(f,x)]
+        self._pyop = [lambda x:list(filter(f,x))]
 
 class Map(PythonQuery):
     def __init__(self,predecessor,f):
         super(Map,self).__init__(predecessor)
-        self._pyop = [lambda x:map(f,x)]
+        self._pyop = [lambda x:list(map(f,x))]
