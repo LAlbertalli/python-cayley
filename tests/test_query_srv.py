@@ -61,20 +61,20 @@ object.name").Out("http://rdf.freebase.com/ns/common.topic.alias").All()':
         x = g.V('"Paul McCartney"@en').In("http://rdf.freebase.com/ns/type.object.name").\
             Out("http://rdf.freebase.com/ns/common.topic.alias").All()
         self.assertEqual(len(x),14)
-        data = [u'"Paul McCartney\'s musical career"@en',
-            u'"Sir James Paul McCartney, MBE"@en',
-            u'"Bernard Webb"@en',
-            u'"Wings"@en',
-            u'"Sir Paul McCartney"@en',
-            u'"Macca"@en',
-            u'"James Paul McCartney"@en',
-            u'"The Beatles"@en',
-            u'"Paul"@en',
-            u'"Sir James Paul McCartney"@en',
-            u'"Percy Thrillington"@en',
-            u'"Solo career of Paul McCartney"@en',
-            u'"Percy \\"Thrills\\" Thrillington"@en',
-            u'"Thrillington, Percy \'Thrills\'"@en'
+        data = ['"Paul McCartney\'s musical career"@en',
+            '"Sir James Paul McCartney, MBE"@en',
+            '"Bernard Webb"@en',
+            '"Wings"@en',
+            '"Sir Paul McCartney"@en',
+            '"Macca"@en',
+            '"James Paul McCartney"@en',
+            '"The Beatles"@en',
+            '"Paul"@en',
+            '"Sir James Paul McCartney"@en',
+            '"Percy Thrillington"@en',
+            '"Solo career of Paul McCartney"@en',
+            '"Percy \\"Thrills\\" Thrillington"@en',
+            '"Thrillington, Percy \'Thrills\'"@en'
             ]
         for pos,res in enumerate(data):
             self.assertEqual(x[pos].id,res)
