@@ -8,6 +8,6 @@ python:
 install:
   - "pip install requests"
   - "pip install responses"
-  - "./setup.py build_ext -i"
+  - "pip install ."
 
 script: py.test
