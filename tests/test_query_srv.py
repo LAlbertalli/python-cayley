@@ -29,9 +29,9 @@ object.name").Out("http://rdf.freebase.com/ns/common.topic.alias").All()':
         query = request.body
         try:
             data = self.__DATA[query]
-            return (200, {},data)
+            return 200, {}, data
         except KeyError:
-            return (404,)
+            return 404, {}, ""
 
     @responses.activate
     def test_base_query_str(self):
