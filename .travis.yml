@@ -10,4 +10,4 @@ install:
   - "pip install responses"
   - "./setup.py build_ext -i"
 
-script: pytest
+script: py.test
