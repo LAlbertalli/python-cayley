@@ -4,13 +4,13 @@ from cayley import g
 
 class TestQuerySrv(unittest.TestCase):
     __DATA ={
-        'g.Vertex("\\"Paul McCartney\\"@en").All()':
+        b'g.Vertex("\\"Paul McCartney\\"@en").All()':
             '{"result": [{"id": "\\"Paul McCartney\\"@en"}]}',
-        'g.Vertex("\\"Paul McCartney\\"@en").In("http://rdf.freebase.com/ns/type.object.name").All()':
+        b'g.Vertex("\\"Paul McCartney\\"@en").In("http://rdf.freebase.com/ns/type.object.name").All()':
             '{"result": [{"id": "http://rdf.freebase.com/ns/m.03j24kf"}]}',
-        'g.Vertex("\\"Paul McCartney\\"@en").Out("http://rdf.freebase.com/ns/common.topic.alias").All()':
+        b'g.Vertex("\\"Paul McCartney\\"@en").Out("http://rdf.freebase.com/ns/common.topic.alias").All()':
             '{"result": null}',
-        'g.Vertex("\\"Paul McCartney\\"@en").In("http://rdf.freebase.com/ns/type.\
+        b'g.Vertex("\\"Paul McCartney\\"@en").In("http://rdf.freebase.com/ns/type.\
 object.name").Out("http://rdf.freebase.com/ns/common.topic.alias").All()':
             '{"result": [{"id": "\\"Paul McCartney\'s musical career\\"@en"},{"id":\
 "\\"Sir James Paul McCartney, MBE\\"@en"},{"id": "\\"Bernard Webb\\"@en"},{"id": "\\"Wings\\"@en"},\
@@ -19,7 +19,7 @@ object.name").Out("http://rdf.freebase.com/ns/common.topic.alias").All()':
 }, {"id": "\\"Percy Thrillington\\"@en"}, {"id": "\\"Solo career of Paul McCartney\\"@en"}, {"id":\
 "\\"Percy \\\\\\"Thrills\\\\\\" Thrillington\\"@en"}, {"id": "\\"Thrillington, Percy \'Thrills\'\\"@en"\
 }]}',
-        'g.Vertex("\\"Paul McCartney\\"@en").In("http://rdf.freebase.com/ns/type.object.name")\
+        b'g.Vertex("\\"Paul McCartney\\"@en").In("http://rdf.freebase.com/ns/type.object.name")\
 .Tag("free_id").All()':
             '{"result": [{"free_id": "http://rdf.freebase.com/ns/m.03j24kf","id":\
 "http://rdf.freebase.com/ns/m.03j24kf"}]}',
@@ -31,6 +31,7 @@ object.name").Out("http://rdf.freebase.com/ns/common.topic.alias").All()':
             data = self.__DATA[query]
             return 200, {}, data
         except KeyError:
+            print(query)
             return 404, {}, ""
 
     @responses.activate
